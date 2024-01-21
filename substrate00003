@@ -1,0 +1,69 @@
+
+Código para gerar contas e chaves
+
+Rust
+use substrate_subkey::generate;
+
+fn main() {
+    let (sk, pk) = generate::<Sr25519>();
+    println!("secret key: {:?}", sk);
+    println!("public key: {:?}", pk);
+}
+Use o código com cuidado. Saiba mais
+Código para criar uma especificação de cadeia personalizada
+
+Rust
+use substrate_build_spec::{build_spec, ChainSpec};
+
+fn main() {
+    let mut spec = ChainSpec::new();
+    spec.name = "My Custom Testnet";
+    spec.authorities.aura = vec!["5CfBuoHDvZ4fd8jkLQicNL8tgjnK8pVG9AiuJrsNrRAx6CNW"];
+    spec.authorities.grandpa = vec![["5CuqCGfwqhjGzSqz5mnq36tMe651mU9Ji8xQ4JRuUTvPcjVN", 1]];
+    build_spec(spec).unwrap();
+}
+Use o código com cuidado. Saiba mais
+Código para preparar o lançamento
+
+Rust
+use substrate_subkey::insert;
+
+fn main() {
+    let (sk, pk) = generate::<Sr25519>();
+    insert::<Sr25519>(sk, "MyNode01", "mypassword").unwrap();
+    insert::<Ed25519>(sk, "MyNode01", "mypassword", "gran").unwrap();
+}
+Use o código com cuidado. Saiba mais
+Código para iniciar o primeiro nó
+
+Rust
+use substrate_node::{start_node, NodeOptions};
+
+fn main() {
+    let options = NodeOptions::default();
+    start_node(options).unwrap();
+}
+Use o código com cuidado. Saiba mais
+Código para adicionar chaves ao keystore
+
+Rust
+use substrate_subkey::insert;
+
+fn main() {
+    let (sk, pk) = generate::<Sr25519>();
+    insert::<Sr25519>(sk, "MyNode02", "mypassword", "aura").unwrap();
+    insert::<Ed25519>(sk, "MyNode02", "mypassword", "gran").unwrap();
+}
+Use o código com cuidado. Saiba mais
+Código para habilitar outros participantes para ingressar
+
+Rust
+use substrate_node::{start_node, NodeOptions};
+
+fn main() {
+    let options = NodeOptions::default();
+    options.bootnodes = vec!["/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWLmrYDLoNTyTYtRdDyZLWDe1paxzxTw5RgjmHLfzW96SX"];
+    start_node(options).unwrap();
+}
+Use o código com cuidado. Saiba mais
+Este código pode ser usado como ponto de partida para criar sua própria rede blockchain permissionada usando Substrate. Você pode modificar o código para atender às suas necessidades específicas.
