@@ -1,0 +1,44 @@
+Starting the first node (Alice):
+
+Open a terminal and navigate to the project directory.
+Purge old chain data: ./target/release/node-template purge-chain --base-path /tmp/alice --chain local
+Start the node:
+Bash
+./target/release/node-template \
+    --base-path /tmp/alice \
+    --chain local \
+    --alice \
+    --port 30333 \
+    --ws-port 9945 \
+    --rpc-port 9933 \
+    --node-key 0000000000000000000000000000000000000000000000000000000000000001 \
+    --telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
+    --validator
+Use o código com cuidado. Saiba mais
+2. Adding a second node (Bob):
+
+Open a new terminal.
+Purge old chain data: ./target/release/node-template purge-chain --base-path /tmp/bob --chain local -y
+Start the node:
+Bash
+./target/release/node-template \
+    --base-path /tmp/bob \
+    --chain local \
+    --bob \
+    --port 30334 \
+    --ws-port 9946 \
+    --rpc-port 9934 \
+    --telemetry-url "wss://telemetry.polkadot.io/submit/ 0" \
+    --validator \
+    --bootnodes /ip4/127.0.0.1/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp
+Use o código com cuidado. Saiba mais
+Key points:
+
+Each node uses a separate base path and account (Alice or Bob).
+Different ports are used to avoid conflicts.
+The --bootnodes flag is used for the second node to connect to the first node.
+3. Verifying block production:
+
+Observe both terminals to see similar messages indicating node discovery and peer connection.
+You should see messages about blocks being produced and finalized.
+Shutting down one node will show the remaining node having 0 peers.
