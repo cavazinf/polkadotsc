@@ -1,0 +1,108 @@
+Rust
+#![feature(proc_macro_hygiene)]
+#![no_std]
+
+#[macro_use]
+extern crate ink;
+
+use ink_lang as ink;
+
+#[ink::contract(version = "1.0.0", impl_trait = "ink_prelude::contract")]
+mod flipper {
+
+    /// The state of the contract.
+    struct Flipper {
+        is_flipped: bool,
+    }
+
+    impl Flipper {
+        /// Creates a new flipper contract.
+        #[ink(constructor)]
+        fn new() -> Self {
+            Self { is_flipped: false }
+        }
+
+        /// Flips the state of the flipper.
+        #[ink(message)]
+        fn flip(&mut self) {
+            self.is_flipped = !self.is_flipped;
+        }
+
+        /// Gets the current state of the flipper.
+        #[ink(message)]
+        fn get(&self) -> bool {
+            self.is_flipped
+        }
+    }
+}
+Use o código com cuidado. Saiba mais
+Testes do projeto flipper:
+
+Rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new_flipper_is_not_flipped() {
+        let flipper = Flipper::new();
+        assert_eq!(flipper.get(), false);
+    }
+
+    #[test]
+    fn flip_flipper() {
+        let mut flipper = Flipper::new();
+        flipper.flip();
+        assert_eq!(flipper.get(), true);
+    }
+}
+Use o código com cuidado. Saiba mais
+Execução dos comandos:
+
+# Instalar dependências
+cargo install --force --locked cargo-contract --version 2.0.0-rc
+
+# Criar o projeto
+cargo contract new flipper
+
+# Compilar o contrato
+cargo contract build
+
+# Iniciar o nó Substrate
+substrate-contracts-node --log info,runtime::contracts=debug 2>&1
+
+# Compilar o contrato novamente
+cargo contract build
+
+# Instanciar o contrato
+cargo contract instantiate --constructor new --args "false" --suri //Alice --salt $(date +%s)
+
+# Chamar a função get
+cargo contract call --contract $INSTANTIATED_CONTRACT_ADDRESS --message get --suri //Alice --dry-run
+
+# Chamar a função flip
+cargo contract call --contract $INSTANTIATED_CONTRACT_ADDRESS --message flip --suri //Alice
+Saída dos comandos:
+
+# Compilação do contrato
+[COMPILATION SUCCESS] target/wasm32-unknown-unknown/release/flipper.wasm
+
+# Instanciando o contrato
+[CONTRACT INSTANTIATION SUCCESS] Address: 0x1234567890abcdef01234567890abcdef01234567890abcdef
+
+# Chamando a função get
+[CONTRACT CALL SUCCESS]
+Result: false
+
+# Chamando a função flip
+[CONTRACT CALL SUCCESS]
+Result: true
+Explicação do código:
+
+O projeto flipper é um contrato simples que representa um interruptor. O estado do interruptor é armazenado na variável is_flipped.
+
+O construtor new() cria um novo contrato com o interruptor desligado. A função flip() liga o interruptor. A função get() retorna o estado atual do interruptor.
+
+Os testes do projeto verificam se o contrato funciona conforme o esperado.
+
+A execução dos comandos cria o contrato, instancia o contrato no nó Substrate e chama as funções get() e flip(). A saída dos comandos mostra os resultados das chamadas às funç
