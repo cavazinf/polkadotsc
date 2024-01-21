@@ -1,0 +1,21 @@
+use ink_lang as ink;
+
+#[ink::contract]
+pub struct MeuContrato {
+    pub count: i32,
+}
+
+#[ink::constructor]
+pub fn new(count: i32) -> Self {
+    Self { count }
+}
+
+#[ink::message]
+pub fn increment(&mut self) {
+    self.count += 1;
+}
+
+#[ink::query]
+pub fn count(&self) -> i32 {
+    self.count
+}
